@@ -75,9 +75,9 @@ createArchRproj <- function(
 
   if(verbose) message('fix the rowRanges information in seRNA')
   rn <- rownames(seRNA)
-  seRNA <- seRNA[rn %in% genes$symbol]
+  seRNA <- seRNA[rn %in% annotationGenes$symbol]
   rn <- rownames(seRNA)
-  rr <- genes[match(rn, genes$symbol)]
+  rr <- annotationGenes[match(rn, annotationGenes$symbol)]
   names(rr) <- rn
   rowRanges(seRNA) <- rr
 

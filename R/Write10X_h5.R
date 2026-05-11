@@ -37,7 +37,7 @@ Write10X_h5 <- function(seu, filename, layer='counts', assay='RNA', barcodes='DN
   if(is.function(barcodes)){
     genome[["barcodes"]] <- barcodes(seu)
   }else{
-    genome[["barcodes"]] <- seu[[barcodes]]
+    genome[["barcodes"]] <- seu[[]][, barcodes]
   }
   features <- genome$create_group('features')
   features[['name']] <- rownames(data)
