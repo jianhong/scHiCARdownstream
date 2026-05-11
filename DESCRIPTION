@@ -24,6 +24,8 @@ Imports:
     methods,
     Seurat,
     SummarizedExperiment
+Remotes:
+    GreenleafLab/ArchR
 Suggests: rmarkdown, knitr, testthat, BiocStyle
 URL: https://github.com/jianhong/scHiCARdownstream
 BugReports: https://github.com/jianhong/scHiCARdownstream/issues
