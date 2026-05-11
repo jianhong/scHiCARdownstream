@@ -47,6 +47,7 @@ Step 1. Load the required library.
 ```{r loadlibrary,warning = FALSE,message=FALSE}
 library(scHiCARdownstream)
 library(ArchR)
+library(BSgenome.Mmusculus.UCSC.mm10)
 ```
 
 Step 2. Read RNA-DNA barcode map. 

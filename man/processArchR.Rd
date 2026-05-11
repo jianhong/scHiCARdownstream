@@ -20,6 +20,8 @@ processArchR(
 
 \item{minDist}{A number that determines how tightly the UMAP is allowed to pack points together. This argument is passed to min_dist in uwot::umap(). For more info on this see https://jlmelville.github.io/uwot/abparams.html.}
 
+\item{skip_rmDup}{skip filter doublets or not.}
+
 \item{verbose}{Print message or not.}
 }
 \value{

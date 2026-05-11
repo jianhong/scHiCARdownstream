@@ -2,3 +2,9 @@
 ^\.Rproj\.user$
 ^\.positai$
 ^\.claude$
+ignore
+vignettes/ArchR_proj
+vignettes/tmp
+vignettes/dpa7.arrow
+vignettes/QualityControl
+vignettes/ArchRLogs

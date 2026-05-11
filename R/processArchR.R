@@ -2,6 +2,7 @@
 #' @param proj An ArchRProject object. The output of \link{createArchRproj}.
 #' @param resolutions The resolutions for each steps.
 #' @param minDist A number that determines how tightly the UMAP is allowed to pack points together. This argument is passed to min_dist in uwot::umap(). For more info on this see https://jlmelville.github.io/uwot/abparams.html.
+#' @param skip_rmDup skip filter doublets or not.
 #' @param verbose Print message or not.
 #' @return An ArchRProject object.
 #' @export
@@ -22,8 +23,8 @@ processArchR <- function(
   stopifnot(is.numeric(resolutions))
   stopifnot(is.numeric(minDist))
 
-  if(verbose) message('Add doublet score to the project and filter doublets')
   if(!skip_rmDup){
+    if(verbose) message('Add doublet score to the project and filter doublets')
     proj <- addDoubletScores(proj, force = TRUE)
     proj <- filterDoublets(proj)
   }

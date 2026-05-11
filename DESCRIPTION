@@ -26,6 +26,6 @@ Imports:
     SummarizedExperiment
 Remotes:
     GreenleafLab/ArchR
-Suggests: rmarkdown, knitr, testthat, BiocStyle
+Suggests: rmarkdown, knitr, testthat, BiocStyle, BSgenome.Mmusculus.UCSC.mm10
 URL: https://github.com/jianhong/scHiCARdownstream
 BugReports: https://github.com/jianhong/scHiCARdownstream/issues
