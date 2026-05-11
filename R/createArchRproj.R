@@ -6,6 +6,8 @@
 #' ArchR project
 #' @param annotationGenes If there is not standard annotations available,
 #' please input the gene annotations in GRanges object with symbols metadata
+#' @param minTSS,minFrags The parameters for \link[ArchR:createArrowFiles]{createArrowFiles}.
+#' @param ... Parameters used by \link[ArchR:createArrowFiles]{createArrowFiles}.
 #' @param verbose Print message or not.
 #' @return An ArchRProject object.
 #' @export
@@ -20,6 +22,9 @@ createArchRproj <- function(
     },
     outputDirectory = "ArchR_proj",
     annotationGenes = NULL,
+    minTSS = 1,
+    minFrags = 1000,
+    ...,
     verbose=TRUE
     ){
   stopifnot(length(rnaFiles)==length(atacFiles))
@@ -85,11 +90,9 @@ createArchRproj <- function(
   ArrowFiles <- createArrowFiles(
     inputFiles = atacFiles,
     sampleNames = names(atacFiles),
-    outputNames = file.path(tempdir(), names(atacFiles)),
-    minTSS = 1,
-    minFrags = 1000,
-    addTileMat = TRUE,
-    addGeneScoreMat = TRUE
+    minTSS = minTSS,
+    minFrags = minFrags,
+    ...
   )
 
   od <- file.path(tempdir(), 'ATAC_ArchR')

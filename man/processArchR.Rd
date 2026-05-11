@@ -9,6 +9,7 @@ processArchR(
   resolutions = c(LSI_ATAC = 0.2, LSI_RNA = 0.2, Clusters_ATAC = 0.4, Clusters_RNA = 0.4,
     Clusters_Combined = 0.4),
   minDist = 0.8,
+  skip_rmDup = FALSE,
   verbose = TRUE
 )
 }

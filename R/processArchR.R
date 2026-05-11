@@ -15,15 +15,18 @@ processArchR <- function(
                   "Clusters_ATAC"=0.4, "Clusters_RNA"=0.4,
                   'Clusters_Combined'=0.4),
     minDist = 0.8,
+    skip_rmDup = FALSE,
     verbose=TRUE){
   stopifnot(is(proj, 'ArchRProject'))
-  stopifnot(all('LSI_ATAC', 'LSI_RNA', 'Clusters_ATAC', 'Clusters_RNA', 'Clusters_Combined') %in% names(resolutions))
+  stopifnot(all(c('LSI_ATAC', 'LSI_RNA', 'Clusters_ATAC', 'Clusters_RNA', 'Clusters_Combined') %in% names(resolutions)))
   stopifnot(is.numeric(resolutions))
   stopifnot(is.numeric(minDist))
 
   if(verbose) message('Add doublet score to the project and filter doublets')
-  proj <- addDoubletScores(proj, force = TRUE)
-  proj <- filterDoublets(proj)
+  if(!skip_rmDup){
+    proj <- addDoubletScores(proj, force = TRUE)
+    proj <- filterDoublets(proj)
+  }
 
   if(verbose) message('Add LSI matrix for ATAC')
   proj <- addIterativeLSI(

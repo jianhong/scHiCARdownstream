@@ -13,6 +13,9 @@ createArchRproj(
  },
   outputDirectory = "ArchR_proj",
   annotationGenes = NULL,
+  minTSS = 1,
+  minFrags = 1000,
+  ...,
   verbose = TRUE
 )
 }
@@ -27,6 +30,10 @@ ArchR project}
 
 \item{annotationGenes}{If there is not standard annotations available,
 please input the gene annotations in GRanges object with symbols metadata}
+
+\item{minTSS, minFrags}{The parameters for \link[ArchR:createArrowFiles]{createArrowFiles}.}
+
+\item{...}{Parameters used by \link[ArchR:createArrowFiles]{createArrowFiles}.}
 
 \item{verbose}{Print message or not.}
 }

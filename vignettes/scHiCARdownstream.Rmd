@@ -1,0 +1,101 @@
+---
+title: "scHiCARdownstream Vignette: scHiCAR downstream analysis via ArchR"
+author: "Jianhong Ou"
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('scHiCARdownstream')`"
+abstract: >
+  scHiCARdownstream is a R package for scHiCAR downstream analysis via ArchR.
+vignette: >
+  %\VignetteIndexEntry{scHiCARdownstream Vignette: scHiCAR downstream analysis via ArchR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output:
+  html_document:
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
+---
+
+```{r, echo=FALSE, results="hide", warning=FALSE}
+knitr::opts_chunk$set(
+    warning = FALSE, message = FALSE,
+    fig.width = 12, fig.height = 4,
+    dpi = 72
+)
+```
+## Introduction
+
+
+
+
+## Installation
+
+```{r, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("jianhong/scHiCARdownstream")
+```
+
+## Quick start
+
+There are five main steps to use `scHiCARdownstream` for downstream analysis of scHiCAR data:
+
+Step 1. Load the required library.
+```{r loadlibrary,warning = FALSE,message=FALSE}
+library(scHiCARdownstream)
+library(ArchR)
+```
+
+Step 2. Read RNA-DNA barcode map. 
+
+```{r bmap}
+barcodeMap <- read.csv(system.file('extdata', 'barcode.map.csv', package='scHiCARdownstream'))
+bmap <- barcodeMap$`DNA`
+names(bmap) <- barcodeMap$`RNA`
+```
+
+Step 3. Create ArchR project
+
+
+```{r}
+extdata <- system.file('extdata', package = 'scHiCARdownstream')
+rnaFiles <- dir(file.path(extdata, 'RNA'), 'matrix.mtx.gz',
+                full.names=TRUE, recursive=TRUE)
+atacFiles <- dir(file.path(extdata, 'ATAC'), 'ATAC.tsv.gz$',
+                 full.names = TRUE)
+names(rnaFiles) <- names(atacFiles) <- 'dpa7'
+addArchRGenome("mm10")
+proj <- createArchRproj(
+    rnaFiles, atacFiles,
+    bmap, barcodesFun=function(x){
+      do.call(rbind, strsplit(colnames(x), '_'))[, 4]
+    },
+    outputDirectory = "ArchR_proj",
+    annotationGenes = NULL,
+    verbose=TRUE
+    )
+```
+Step 4. Process the data
+
+```{r}
+proj <- processArchR(proj, skip_rmDup=TRUE) ## data are not good for rm doublets.
+plotEmbedding(proj, 
+              name = "Clusters_Combined",
+              embedding = "UMAP_Combined",
+              size = 1, labelAsFactors=F, labelMeans=F)
+# and call peaks
+# proj <- callPeaks(proj)
+```
+
+
+
+
+## SessionInfo
+
+```{r pressure, echo=FALSE}
+sessionInfo()
+```
+
