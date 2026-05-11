@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.positai
+ignore/*
+**.DS_Store
+*.Rproj

@@ -1,0 +1,29 @@
+Package: scHiCARdownstream
+Title: scHiCAR downstream analysis
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Jianhong",
+             family = "Ou",
+             role = c("aut", "cre"),
+             email = "jou@morgridge.org",
+             comment=c(ORCID="0000-0002-8652-2488")))
+Description: Downstream analysis of scHiCAR data by ArchR.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
+biocViews: Visualization, SingleCell, RNASeq, ATACseq, HiC
+Depends:
+    R (>= 4.5.0)
+Imports:
+    ArchR,
+    Biostrings,
+    GenomicFeatures,
+    hdf5r,
+    methods,
+    Seurat,
+    SummarizedExperiment
+Suggests: rmarkdown, knitr, testthat, BiocStyle
+URL: https://github.com/jianhong/scHiCARdownstream
+BugReports: https://github.com/jianhong/scHiCARdownstream/issues
