@@ -51,6 +51,7 @@ replace_RNA_barcode <- function(
 }
 
 checkBmap <- function(bmap, barLen=18){
+  barLen <- barLen/3
   stopifnot(is.character(bmap))
   stopifnot(length(names(bmap))==length(bmap))
   stopifnot(all(nchar(bmap)==barLen))

@@ -62,7 +62,7 @@ createArchRproj <- function(
   rna <- replace_RNA_barcode(rna, bmap=bmap, barcodesFun=barcodesFun)
 
   if(verbose) message('write the RNA reads to a tmp file')
-  tmpF <- tempfile(pattern = names(rnaFiles), fileext = "h5")
+  tmpF <- tempfile(pattern = names(rnaFiles), fileext = ".h5")
   null <- mapply(Write10X_h5, rna, tmpF)
 
   if(verbose) message('import the tmp file by import10xFeatureMatrix')

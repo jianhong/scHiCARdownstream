@@ -8,6 +8,7 @@ callPeaks(
   proj,
   groupBy = "Clusters_Combined",
   pathToMacs2 = findMacs2(),
+  ...,
   reducedDims = "LSI_Combined",
   verbose = TRUE
 )
@@ -18,6 +19,8 @@ callPeaks(
 \item{groupBy}{The groups used to call peaks by function \link[ArchR:addReproduciblePeakSet]{addReproduciblePeakSet}.}
 
 \item{pathToMacs2}{The macs2 path.}
+
+\item{...}{Other parameters used by \link[ArchR:addReproduciblePeakSet]{addReproduciblePeakSet}.}
 
 \item{reducedDims}{The reductions used to link the gene and peaks.}
 
