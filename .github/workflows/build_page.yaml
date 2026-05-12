@@ -38,6 +38,7 @@ jobs:
           remotes::install_deps(dependencies = TRUE, repos = BiocManager::repositories())
           remotes::install_cran("rcmdcheck")
           BiocManager::install('pkgdown')
+          BiocManager::install('jianhong/scHiCARdownstream')
         shell: Rscript {0}
 
       - name: Build pkgdown
