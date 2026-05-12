@@ -87,9 +87,12 @@ plotEmbedding(proj,
               name = "Clusters_Combined",
               embedding = "UMAP_Combined",
               size = 1, labelAsFactors=F, labelMeans=F)
+```
+```{r callpeak, eval=FALSE}
 # and call peaks, make sure macs2 available or provide the path via parameter `pathToMacs2`.
 proj <- callPeaks(proj)
 ```
+
 Step 5. prepare files for [FastHigashi](https://github.com/ma-compbio/Higashi/wiki/Input-Files)
 
 ```{r prepareHigashiFiles}
