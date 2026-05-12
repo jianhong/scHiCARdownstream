@@ -11,7 +11,8 @@ prepareHigashiFiles(
   labelInfoColumns = c("Sample", "Clusters_Combined"),
   plot_label = "Clusters_Combined",
   ...,
-  verbose = TRUE
+  verbose = TRUE,
+  use_conda = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ label_info.pickle}
 See https://github.com/ma-compbio/Higashi/wiki/Configure-the-parameters-for-Fast-Higashi.}
 
 \item{verbose}{Print message or not.}
+
+\item{use_conda}{Use conda to create the python enviroment or not}
 }
 \value{
 nothing
