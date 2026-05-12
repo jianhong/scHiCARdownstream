@@ -61,7 +61,7 @@ names(bmap) <- barcodeMap$`RNA`
 Step 3. Create ArchR project
 
 
-```{r}
+```{r createProj}
 extdata <- system.file('extdata', package = 'scHiCARdownstream')
 rnaFiles <- dir(file.path(extdata, 'RNA'), 'matrix.mtx.gz',
                 full.names=TRUE, recursive=TRUE)
@@ -81,16 +81,27 @@ proj <- createArchRproj(
 ```
 Step 4. Process the data
 
-```{r}
+```{r processArchR}
 proj <- processArchR(proj, skip_rmDup=TRUE) ## data are not good for rm doublets.
 plotEmbedding(proj, 
               name = "Clusters_Combined",
               embedding = "UMAP_Combined",
               size = 1, labelAsFactors=F, labelMeans=F)
-# and call peaks
-# proj <- callPeaks(proj)
+# and call peaks, make sure macs2 available or provide the path via parameter `pathToMacs2`.
+proj <- callPeaks(proj)
 ```
+Step 5. prepare files for [FastHigashi](https://github.com/ma-compbio/Higashi/wiki/Input-Files)
 
+```{r prepareHigashiFiles}
+pairs_files <- dir(file.path(extdata, 'Pairs'), 'pairs.gz', full.names = TRUE)
+names(pairs_files) <- 'dpa7'
+prepareHigashiFiles(proj, pairs_files)
+```
+Step 6. run FastHigashi (ask Higashi installed)
+
+```{r runHigashi, eval=FALSE}
+runFastHigashi()
+```
 
 
 

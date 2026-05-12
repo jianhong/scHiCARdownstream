@@ -21,9 +21,15 @@ Imports:
     Biostrings,
     GenomicFeatures,
     hdf5r,
+    karyoploteR,
     methods,
+    reticulate,
+    rjson,
+    rtracklayer,
+    Seqinfo,
     Seurat,
-    SummarizedExperiment
+    SummarizedExperiment,
+    utils
 Remotes:
     GreenleafLab/ArchR
 Suggests: rmarkdown, knitr, testthat, BiocStyle,
