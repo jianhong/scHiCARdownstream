@@ -40,11 +40,6 @@ jobs:
           BiocManager::install('pkgdown')
         shell: Rscript {0}
 
-      # - name: Install MACS2
-      #   run: |
-      #     pip install macs3
-      #     ln -s /usr/local/bin/macs3 /usr/local/bin/macs2
-
       - name: Build pkgdown
         run: |
            PATH=$PATH:$HOME/bin/ Rscript -e 'pkgdown::build_site(".")'
