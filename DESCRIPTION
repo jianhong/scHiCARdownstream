@@ -17,14 +17,15 @@ biocViews: Visualization, SingleCell, RNASeq, ATACseq, HiC
 Depends:
     R (>= 4.5.0)
 Imports:
+    AnnotationHub,
     ArchR,
     Biostrings,
     GenomicFeatures,
     hdf5r,
-    karyoploteR,
+    httr,
+    jsonlite,
     methods,
     reticulate,
-    rjson,
     rtracklayer,
     Seqinfo,
     Seurat,
