@@ -9,7 +9,8 @@
 #' @param plot_label,... The parameters for config JSON.
 #' See https://github.com/ma-compbio/Higashi/wiki/Configure-the-parameters-for-Fast-Higashi.
 #' @param verbose Print message or not.
-#' @param use_conda Use conda to create the python enviroment or not
+#' @param use_conda Use conda to create the python environment or not. If a path
+#' is given, will use that conda env.
 #' @return nothing
 #' @export
 #' @importFrom reticulate py_save_object

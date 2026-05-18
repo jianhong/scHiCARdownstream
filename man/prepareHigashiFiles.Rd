@@ -32,7 +32,8 @@ See https://github.com/ma-compbio/Higashi/wiki/Configure-the-parameters-for-Fast
 
 \item{verbose}{Print message or not.}
 
-\item{use_conda}{Use conda to create the python enviroment or not}
+\item{use_conda}{Use conda to create the python environment or not. If a path
+is given, will use that conda env.}
 }
 \value{
 nothing

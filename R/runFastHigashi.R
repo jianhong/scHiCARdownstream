@@ -1,6 +1,7 @@
 #' Run FastHigashi
 #' @param inputDirectory The file path for Higashi
-#' @param use_conda Use conda to create the python enviroment or not
+#' @param use_conda Use conda to create the python environment or not. If a path
+#' is given, will use that conda env.
 #' @return nothing.
 #' @importFrom reticulate conda_binary install_miniconda import py_save_object
 #'  conda_create conda_install conda_list use_condaenv py_config
@@ -11,10 +12,13 @@
 runFastHigashi <- function(inputDirectory='per_cell', use_conda = FALSE){
   # Ensure higashi and fasthigashi are installed in your python env
   # py_install(c("higashi", "fasthigashi", "umap-learn"))
-
-  if(use_conda){
-    prepare_miniconda()
-    prepare_env()
+  if(is.logical(use_conda)){
+    if(use_conda){
+      prepare_miniconda()
+      prepare_env()
+    }
+  }else{
+    use_condaenv(use_conda, required = TRUE)
   }
 
   higashi <- import("higashi.Higashi_wrapper")
@@ -113,11 +117,39 @@ prepare_env <- function(){
   # 2. Automatically create environment if it doesn't exist
   if (!env_name %in% conda_list()$name) {
     message("Creating conda environment: ", env_name)
-    conda_create(env_name, packages = c("python=3.9", "numpy=1.22.3", "pandas=1.3.5", "higashi", "fasthigashi", "umap-learn"), channel = c('ruochiz', 'conda-forge')) # Higashi typically needs Python 3.8+
-  }
+    conda_create(env_name, packages = "python=3.9", forge = TRUE) # Higashi typically needs Python 3.8+
+    conda_install(
+      env_name,
+      packages =c('pytorch', 'torchvision', 'torchaudio', 'cpuonly'),
+      channel = 'pytorch')
+    #git clone https://github.com/ma-compbio/Higashi/
+    #cd Higashi
+    #python setup.py install
+    # Import the GitPython module
+    conda_install(
+      env_name,
+      packages = c("gitpython", "setuptools"),
+      forge = TRUE)
+    use_condaenv(env_name, required = TRUE)
 
-  # 4. Force R to use this specific environment
-  use_condaenv(env_name, required = TRUE)
+    git <- import("git")
+    # Define your repository and target directory
+    repo_url <- "https://github.com/ma-compbio/Higashi"
+    target_dir <- file.path(tempdir(), 'Higashi')
+    # Run the clone command
+    git$Repo$clone_from(repo_url, target_dir)
+    subprocess <- import("subprocess")
+    subprocess$run(
+      list("python", "setup.py", "install"),
+      cwd = target_dir
+    )
+
+    #conda install -c ruochiz fasthigashi
+    conda_install(env_name, packages="fasthigashi", channel = "ruochiz")
+  }else{
+    # Force R to use this specific environment
+    use_condaenv(env_name, required = TRUE)
+  }
 
   # Verify setup
   py_config()

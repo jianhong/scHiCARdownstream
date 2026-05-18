@@ -9,7 +9,8 @@ runFastHigashi(inputDirectory = "per_cell", use_conda = FALSE)
 \arguments{
 \item{inputDirectory}{The file path for Higashi}
 
-\item{use_conda}{Use conda to create the python enviroment or not}
+\item{use_conda}{Use conda to create the python environment or not. If a path
+is given, will use that conda env.}
 }
 \value{
 nothing.
