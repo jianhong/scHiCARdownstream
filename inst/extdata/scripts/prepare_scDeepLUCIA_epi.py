@@ -222,7 +222,7 @@ def process_sample(
 
         epi = stack_marks(mark_epis)  # (n_bins, sub, n_marks)
 
-        out_path = os.path.join(sample_out, f"{marker}_{chrom}_epi.npy")
+        out_path = os.path.join(sample_out, f"{marker}.{chrom}.npy")
         np.save(out_path, epi)
 
         print(f"  →  {epi.shape}  {out_path}")
