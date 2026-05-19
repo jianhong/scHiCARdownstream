@@ -22,6 +22,7 @@
 #' @importFrom dplyr count %>% .data
 #' @importFrom GenomicRanges tileGenome
 #' @importFrom BSgenome getSeq
+#' @importFrom GenomeInfoDb standardChromosomes
 #' @examples
 #' # example code
 #'
@@ -46,8 +47,8 @@ createContactMatrix <- function(
     chroms <- seqlev
   }
   stopifnot('No chromosome detectable.'=length(chroms)>0)
-
-  outdir <- file.path(outdir, genome(genome)[chroms[1]])
+  assembly <- genome(genome)[chroms[1]]
+  outdir <- file.path(outdir, assembly)
   dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 
   ccd <- getCellColData(proj)
@@ -58,7 +59,7 @@ createContactMatrix <- function(
 
   barcodes <- getArchRBarcode(proj)
   barcodes <- split(barcodes, make.names(apply(ccd, 1, paste, sep='_')))
-  if(!all(names(pairs) %in% names(barcodes))){
+  if(!all(names(pairs_files) %in% names(barcodes))){
     bgp <- paste(names(barcodes), collapse=', ')
     stop('The names of pairs are not all in the barcodes groups. ',
          'The names of barcodes groups are: ', bgp)
@@ -75,15 +76,11 @@ createContactMatrix <- function(
                 is.character(.ele[, 1]))
   })
   if(verbose) message('Filter the barcodes')
-  pairs <- lapply(pairs, function(.ele){
-    .ele[.ele[, 1] %in% barcodes, ]
-  })
   pairs <- split(pairs, names(pairs))
-
   pairs <- mapply(function(pair, bc){
     pair <- do.call(rbind, pair)
     rownames(pair) <- NULL
-    pair[pair[, 1] %in% bc, ]
+    pair[pair[, 1] %in% bc, , drop=FALSE]
   }, pairs, barcodes[names(pairs)], SIMPLIFY = FALSE)
 
   if(verbose) message('Write the unsorted pair to tsv file')
@@ -95,13 +92,16 @@ createContactMatrix <- function(
                 col.names = FALSE, row.names = FALSE)
     if(verbose){
       file_name <- file.path(pff, paste0(n, '.contact.pairs'))
-      message('command lines: ',
-              'bgzip ', file_name)
+      message('command lines: ')
+      message('pairtools header generate --chroms-path ${chrom_size_file}',
+        ' --assembly ', assembly,
+        ' --columns readID,chrom1,pos1,chrom2,pos2 -o ',
+        file_name, '.gz ', file_name)
       srt_file <- paste0(sub('.contact', '.sort', file_name), '.gz')
       message('pairtools sort -o ', srt_file,
               ' ', file_name, '.gz')
       message('pairix -f ', srt_file)
-      cool_file <- sub('.contact.pairs', '.', resolution,'.cool', file_name)
+      cool_file <- sub('contact.pairs', paste0(resolution,'.cool'), file_name)
       message('cooler cload pairix --max-split 2 --nproc ${ncore} ${chrom_size_file}:',
               resolution, ' ',
               srt_file, ' ', cool_file)
