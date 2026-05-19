@@ -7,6 +7,8 @@
 <url><loc>/reference/Write10X_h5.html</loc></url>
 <url><loc>/reference/callPeaks.html</loc></url>
 <url><loc>/reference/createArchRproj.html</loc></url>
+<url><loc>/reference/createContactMatrix.html</loc></url>
+<url><loc>/reference/createOnehotGenomicNpy.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/prepareHigashiFiles.html</loc></url>
 <url><loc>/reference/processArchR.html</loc></url>

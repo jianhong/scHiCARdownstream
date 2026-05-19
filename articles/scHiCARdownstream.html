@@ -70,7 +70,7 @@ analysis via ArchR</h1>
                         <h4 data-toc-skip class="author">Jianhong
 Ou</h4>
             
-            <h4 data-toc-skip class="date">18 May 2026</h4>
+            <h4 data-toc-skip class="date">19 May 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jianhong/scHiCARdownstream/blob/main/vignettes/scHiCARdownstream.Rmd" class="external-link"><code>vignettes/scHiCARdownstream.Rmd</code></a></small>
       <div class="hidden name"><code>scHiCARdownstream.Rmd</code></div>
@@ -175,8 +175,42 @@ downstream analysis of scHiCAR data:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pairs_files</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'dpa7'</span></span>
 <span><span class="fu"><a href="../reference/prepareHigashiFiles.html">prepareHigashiFiles</a></span><span class="op">(</span><span class="va">proj</span>, <span class="va">pairs_files</span><span class="op">)</span></span></code></pre></div>
 <p>Step 6. run FastHigashi (ask Higashi installed)</p>
+<p>This step as Higashi and FastHigashi installed. The parameter
+<code>use_conda</code> is still in test.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/runFastHigashi.html">runFastHigashi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Step 7. prepare files for <a href="https://github.com/kaistcbfg/scDeepLUCIA" class="external-link">scDeepLUCIA</a></p>
+<p>Generate the bigwig files for ATAC reads for each sample</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ArchR</span><span class="fu">::</span><span class="fu"><a href="https://www.ArchRProject.com/reference/getGroupBW.html" class="external-link">getGroupBW</a></span><span class="op">(</span><span class="va">proj</span>, groupBy <span class="op">=</span> <span class="st">"Sample"</span>,</span>
+<span>                  normMethod <span class="op">=</span> <span class="st">"nFrags"</span>,</span>
+<span>                  tileSize <span class="op">=</span> <span class="fl">25</span>, <span class="co"># tileSize 25 is required by scDeepLUCIA</span></span>
+<span>                  maxCells <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "/__w/scHiCARdownstream/scHiCARdownstream/vignettes/ArchR_proj/GroupBigWigs/Sample/dpa7-TileSize-25-normMethod-nFrags-ArchR.bw"</span></span></code></pre>
+<p>Run scripts to create the Epi array files. Note the script ask
+<code>pyBigWig</code> and <code>numpy</code> installed.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Retrieve path to the script within your package</span></span>
+<span><span class="va">script_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"scripts"</span>, <span class="st">"prepare_scDeepLUCIA_epi.py"</span>,</span>
+<span>                           package <span class="op">=</span> <span class="st">"scHiCARdownstream"</span><span class="op">)</span></span>
+<span><span class="co"># rewrite the sys.argv for argparse.ArgumentParser</span></span>
+<span><span class="va">sys</span> <span class="op">&lt;-</span> <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/import.html" class="external-link">import</a></span><span class="op">(</span><span class="st">"sys"</span><span class="op">)</span></span>
+<span><span class="va">sys</span><span class="op">$</span><span class="va">argv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="va">script_path</span>,</span>
+<span>    <span class="st">"--bw_roots"</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">ArchR</span><span class="fu">::</span><span class="fu"><a href="https://www.ArchRProject.com/reference/getOutputDirectory.html" class="external-link">getOutputDirectory</a></span><span class="op">(</span><span class="va">proj</span><span class="op">)</span>, <span class="st">'GroupBigWigs'</span>, <span class="st">'Sample'</span><span class="op">)</span>,</span>
+<span>    <span class="st">"--marker_name"</span>, <span class="st">'r2_030M'</span>,</span>
+<span>    <span class="st">"--resolution"</span>, <span class="fl">5000</span>,</span>
+<span>    <span class="st">"--outdir"</span>, <span class="st">"scDeepLUCIA_inputs/sliced_epi_array/mm10"</span>,</span>
+<span>    <span class="st">"--nan_to"</span>, <span class="fl">0.0</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co"># Run the Python script</span></span>
+<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_run.html" class="external-link">py_run_file</a></span><span class="op">(</span><span class="va">script_path</span><span class="op">)</span></span></code></pre></div>
+<p>Create one-hot encoded genomic feature npy file.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/createOnehotGenomicNpy.html">createOnehotGenomicNpy</a></span><span class="op">(</span><span class="va">proj</span>, resolution<span class="op">=</span><span class="fl">5000</span><span class="op">)</span></span></code></pre></div>
+<p>Create 5kb-resolution contact matrix npy file.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/createContactMatrix.html">createContactMatrix</a></span><span class="op">(</span><span class="va">proj</span>, <span class="va">pairs_files</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="sessioninfo">SessionInfo<a class="anchor" aria-label="anchor" href="#sessioninfo"></a>
@@ -214,8 +248,8 @@ downstream analysis of scHiCAR data:</p>
 <span><span class="co">## [13] SummarizedExperiment_1.43.0        Biobase_2.73.1                    </span></span>
 <span><span class="co">## [15] RcppArmadillo_15.2.6-1             Rcpp_1.1.1-1.1                    </span></span>
 <span><span class="co">## [17] Matrix_1.7-5                       GenomicRanges_1.65.0              </span></span>
-<span><span class="co">## [19] Seqinfo_1.3.0                      IRanges_2.47.0                    </span></span>
-<span><span class="co">## [21] S4Vectors_0.51.1                   BiocGenerics_0.59.1               </span></span>
+<span><span class="co">## [19] Seqinfo_1.3.0                      IRanges_2.47.1                    </span></span>
+<span><span class="co">## [21] S4Vectors_0.51.2                   BiocGenerics_0.59.2               </span></span>
 <span><span class="co">## [23] generics_0.1.4                     sparseMatrixStats_1.25.0          </span></span>
 <span><span class="co">## [25] MatrixGenerics_1.25.0              matrixStats_1.5.0                 </span></span>
 <span><span class="co">## [27] data.table_1.18.4                  stringr_1.6.0                     </span></span>
@@ -239,12 +273,12 @@ downstream analysis of scHiCAR data:</p>
 <span><span class="co">##  [31] pbapply_1.7-4            DBI_1.3.0                RColorBrewer_1.1-3      </span></span>
 <span><span class="co">##  [34] pkgload_1.5.2            abind_1.4-8              Rtsne_0.17              </span></span>
 <span><span class="co">##  [37] purrr_1.2.2              RCurl_1.98-1.18          rappdirs_0.3.4          </span></span>
-<span><span class="co">##  [40] ggrepel_0.9.8            irlba_2.3.7              listenv_0.10.1          </span></span>
-<span><span class="co">##  [43] spatstat.utils_3.2-3     BiocStyle_2.41.0         goftest_1.2-3           </span></span>
+<span><span class="co">##  [40] ggrepel_0.9.8            irlba_2.3.7              spatstat.utils_3.2-3    </span></span>
+<span><span class="co">##  [43] listenv_0.10.1           BiocStyle_2.41.0         goftest_1.2-3           </span></span>
 <span><span class="co">##  [46] RSpectra_0.16-2          spatstat.random_3.4-5    fitdistrplus_1.2-6      </span></span>
 <span><span class="co">##  [49] parallelly_1.47.0        pkgdown_2.2.0            codetools_0.2-20        </span></span>
-<span><span class="co">##  [52] DelayedArray_0.39.1      tidyselect_1.2.1         UCSC.utils_1.9.0        </span></span>
-<span><span class="co">##  [55] farver_2.1.2             BiocFileCache_3.3.0      spatstat.explore_3.8-0  </span></span>
+<span><span class="co">##  [52] DelayedArray_0.39.2      tidyselect_1.2.1         UCSC.utils_1.9.0        </span></span>
+<span><span class="co">##  [55] farver_2.1.2             spatstat.explore_3.8-0   BiocFileCache_3.3.0     </span></span>
 <span><span class="co">##  [58] GenomicAlignments_1.49.0 jsonlite_2.0.0           ellipsis_0.3.3          </span></span>
 <span><span class="co">##  [61] progressr_0.19.0         ggridges_0.5.7           survival_3.8-6          </span></span>
 <span><span class="co">##  [64] systemfonts_1.3.2        tools_4.6.0              ragg_1.5.2              </span></span>
@@ -259,7 +293,7 @@ downstream analysis of scHiCAR data:</p>
 <span><span class="co">##  [91] S4Arrays_1.13.0          uwot_0.2.4               pkgconfig_2.0.3         </span></span>
 <span><span class="co">##  [94] blob_1.3.0               lmtest_0.9-40            S7_0.2.2                </span></span>
 <span><span class="co">##  [97] htmltools_0.5.9          dotCall64_1.2            scales_1.4.0            </span></span>
-<span><span class="co">## [100] png_0.1-9                spatstat.univar_3.1-7    knitr_1.51              </span></span>
+<span><span class="co">## [100] png_0.1-9                spatstat.univar_3.2-0    knitr_1.51              </span></span>
 <span><span class="co">## [103] reshape2_1.4.5           rjson_0.2.23             nlme_3.1-169            </span></span>
 <span><span class="co">## [106] curl_7.1.0               cachem_1.1.0             zoo_1.8-15              </span></span>
 <span><span class="co">## [109] BiocVersion_3.24.0       KernSmooth_2.23-26       parallel_4.6.0          </span></span>
