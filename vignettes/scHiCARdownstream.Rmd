@@ -102,10 +102,50 @@ prepareHigashiFiles(proj, pairs_files)
 ```
 Step 6. run FastHigashi (ask Higashi installed)
 
+This step as Higashi and FastHigashi installed. The parameter `use_conda` is still in test.
 ```{r runHigashi, eval=FALSE}
 runFastHigashi()
 ```
 
+Step 7. prepare files for [scDeepLUCIA](https://github.com/kaistcbfg/scDeepLUCIA)
+
+Generate the bigwig files for ATAC reads for each sample
+```{r createBW}
+ArchR::getGroupBW(proj, groupBy = "Sample",
+                  normMethod = "nFrags",
+                  tileSize = 25, # tileSize 25 is required by scDeepLUCIA
+                  maxCells = 1000)
+```
+Run scripts to create the Epi array files. Note the script ask `pyBigWig` and `numpy` installed.
+```{r eval=FALSE}
+# Retrieve path to the script within your package
+script_path <- system.file("extdata", "scripts", "prepare_scDeepLUCIA_epi.py",
+                           package = "scHiCARdownstream")
+# rewrite the sys.argv for argparse.ArgumentParser
+sys <- reticulate::import("sys")
+sys$argv <- list(
+    script_path,
+    "--bw_roots", file.path(ArchR::getOutputDirectory(proj), 'GroupBigWigs', 'Sample'),
+    "--marker_name", 'r2_030M',
+    "--resolution", 5000,
+    "--outdir", "scDeepLUCIA_inputs/sliced_epi_array/mm10",
+    "--nan_to", 0.0
+  )
+# Run the Python script
+reticulate::py_run_file(script_path)
+```
+
+Create one-hot encoded genomic feature npy file.
+
+```{r eval=FALSE}
+createOnehotGenomicNpy(proj, resolution=5000)
+```
+
+Create 5kb-resolution contact matrix npy file.
+
+```{r eval=FALSE}
+createContactMatrix(proj, pairs_files)
+```
 
 
 ## SessionInfo

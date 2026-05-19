@@ -3,13 +3,14 @@
 #' @param use_conda Use conda to create the python environment or not. If a path
 #' is given, will use that conda env.
 #' @return nothing.
-#' @importFrom reticulate conda_binary install_miniconda import py_save_object
-#'  conda_create conda_install conda_list use_condaenv py_config
+#' @importFrom reticulate conda_binary install_miniconda import py_save_object conda_create conda_install conda_list use_condaenv py_config
 #' @export
 #' @examples
 #' # example code
 #'
-runFastHigashi <- function(inputDirectory='per_cell', use_conda = FALSE){
+runFastHigashi <- function(
+    inputDirectory='per_cell',
+    use_conda = FALSE){
   # Ensure higashi and fasthigashi are installed in your python env
   # py_install(c("higashi", "fasthigashi", "umap-learn"))
   if(is.logical(use_conda)){
