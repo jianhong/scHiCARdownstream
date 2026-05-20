@@ -106,9 +106,6 @@ prepare_miniconda <- function(){
     message("Miniconda not found. Starting installation...")
     reticulate::install_miniconda()
   }
-
-  # 3. Final verification
-  py_config()
 }
 
 prepare_env <- function(){
@@ -118,11 +115,18 @@ prepare_env <- function(){
   # 2. Automatically create environment if it doesn't exist
   if (!env_name %in% conda_list()$name) {
     message("Creating conda environment: ", env_name)
-    conda_create(env_name, packages = "python=3.9", forge = TRUE) # Higashi typically needs Python 3.8+
+    conda_create(env_name,
+                 packages = c("python=3.9", "numpy<2.0.0",
+                              "pandas<2.0.0", "scipy<2.0.0"),
+                 forge = TRUE) # Higashi typically needs Python 3.8+
     conda_install(
       env_name,
       packages =c('pytorch', 'torchvision', 'torchaudio', 'cpuonly'),
       channel = 'pytorch')
+    conda_install(
+      env_name,
+      packages =c('cooler'),
+      channel = 'bioconda')
     #git clone https://github.com/ma-compbio/Higashi/
     #cd Higashi
     #python setup.py install
@@ -131,27 +135,24 @@ prepare_env <- function(){
       env_name,
       packages = c("gitpython", "setuptools"),
       forge = TRUE)
-    use_condaenv(env_name, required = TRUE)
-
-    git <- import("git")
-    # Define your repository and target directory
-    repo_url <- "https://github.com/ma-compbio/Higashi"
-    target_dir <- file.path(tempdir(), 'Higashi')
-    # Run the clone command
-    git$Repo$clone_from(repo_url, target_dir)
-    subprocess <- import("subprocess")
-    subprocess$run(
-      list("python", "setup.py", "install"),
-      cwd = target_dir
-    )
+    # use_condaenv(env_name, required = TRUE)
+    #
+    # git <- import("git")
+    # # Define your repository and target directory
+    # repo_url <- "https://github.com/ma-compbio/Higashi"
+    # target_dir <- file.path(tempdir(), 'Higashi')
+    # # Run the clone command
+    # git$Repo$clone_from(repo_url, target_dir)
+    # subprocess <- import("subprocess")
+    # subprocess$run(
+    #   list("python", "setup.py", "install"),
+    #   cwd = target_dir
+    # )
 
     #conda install -c ruochiz fasthigashi
     conda_install(env_name, packages="fasthigashi", channel = "ruochiz")
-  }else{
-    # Force R to use this specific environment
-    use_condaenv(env_name, required = TRUE)
   }
 
-  # Verify setup
-  py_config()
+  # Force R to use this specific environment
+  use_condaenv(env_name, required = TRUE)
 }

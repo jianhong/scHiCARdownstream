@@ -51,6 +51,9 @@ prepareHigashiFiles <- function(
   if(length(dots$impute_list)==0){
     dots$impute_list <- chrom_list
   }
+  if(length(dots$data_dir)==0){
+    dots$data_dir <- outputDirectory
+  }
   if(length(dots$genome_reference_path)==0){
     chrom.size <- seqlengths(genes)[chrom_list]
     chrom.size <- as.data.frame(chrom.size)
@@ -121,7 +124,7 @@ prepareHigashiFiles <- function(
   writeLines(filelist, file.path(outputDirectory, 'filelist.txt'))
   writeToPickle(label_info, outputDirectory = outputDirectory,
                 use_conda=use_conda)
-  writeToJSON(, outputDirectory=outputDirectory)
+  writeToJSON(dots, outputDirectory=outputDirectory)
 }
 
 getArchRBarcode <- function(proj){
@@ -148,7 +151,7 @@ writeToJSON <- function(additional=list(), outputDirectory){
     "chrom_list" = additional$chrom_list,
     "resolution" = 1000000,
     "resolution_cell" = 1000000,
-    "resolution_fh" = 500000,
+    "resolution_fh" = list(500000),
     "minimum_distance" = 2000000,
     "maximum_distance" = -1,
     "local_transfer_range" = 1,
@@ -183,7 +186,7 @@ writeToJSON <- function(additional=list(), outputDirectory){
   for(i in names(additional)){
     json[[i]] <- additional[[i]]
   }
-  json <- toJSON(json)
+  json <- toJSON(json, auto_unbox = TRUE, pretty = TRUE)
   writeLines(json, file.path(outputDirectory, 'Fasthigashi.JSON'))
 }
 
