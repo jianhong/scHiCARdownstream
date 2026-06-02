@@ -15,7 +15,7 @@ runFastHigashi <- function(
   # py_install(c("higashi", "fasthigashi", "umap-learn"))
   if(is.logical(use_conda)){
     if(use_conda){
-      prepare_miniconda()
+      #prepare_miniconda()
       prepare_env()
     }
   }else{
@@ -135,19 +135,19 @@ prepare_env <- function(){
       env_name,
       packages = c("gitpython", "setuptools"),
       forge = TRUE)
-    # use_condaenv(env_name, required = TRUE)
-    #
-    # git <- import("git")
-    # # Define your repository and target directory
-    # repo_url <- "https://github.com/ma-compbio/Higashi"
-    # target_dir <- file.path(tempdir(), 'Higashi')
-    # # Run the clone command
-    # git$Repo$clone_from(repo_url, target_dir)
-    # subprocess <- import("subprocess")
-    # subprocess$run(
-    #   list("python", "setup.py", "install"),
-    #   cwd = target_dir
-    # )
+    use_condaenv(env_name, required = TRUE)
+
+    git <- import("git")
+    # Define your repository and target directory
+    repo_url <- "https://github.com/ma-compbio/Higashi"
+    target_dir <- file.path(tempdir(), 'Higashi')
+    # Run the clone command
+    git$Repo$clone_from(repo_url, target_dir)
+    subprocess <- import("subprocess")
+    subprocess$run(
+      list("python", "setup.py", "install"),
+      cwd = target_dir
+    )
 
     #conda install -c ruochiz fasthigashi
     conda_install(env_name, packages="fasthigashi", channel = "ruochiz")

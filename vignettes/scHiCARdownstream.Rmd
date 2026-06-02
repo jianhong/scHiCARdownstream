@@ -104,7 +104,7 @@ Step 6. run FastHigashi (ask Higashi installed)
 
 This step as Higashi and FastHigashi installed. The parameter `use_conda` is still in test.
 ```{r runHigashi, eval=FALSE}
-runFastHigashi()
+runFastHigashi() # runFastHigashi(use_conda='higashi_env')
 ```
 
 Step 7. prepare files for [scDeepLUCIA](https://github.com/kaistcbfg/scDeepLUCIA)

@@ -133,7 +133,7 @@ getArchRBarcode <- function(proj){
 
 writeToPickle <- function(label_info, outputDirectory, use_conda=FALSE){
   if(use_conda){
-    prepare_miniconda()
+    #prepare_miniconda()
     prepare_env()
   }
   label_info_list <- as.list(label_info)
